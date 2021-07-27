@@ -24,12 +24,17 @@ class Search extends React.Component {
                 } else {
                     this.setState({books:results})
                 } 
+            } else {
+                this.setState({books:[]})
             }
             
         }
         catch(error) {
         }
     }
+    
+        
+    
     render() {
         return (
             <div className="search-books">
@@ -45,7 +50,7 @@ class Search extends React.Component {
                 <div className="search-books-results">
                     <ol className="books-grid">
                         {this.state.books.map(book =>  (
-                            <Book {...book} key={book.id} all={this.props.book}/>
+                            <Book {...book} key={book.id} all={this.props.book} />
                         ))}
                     </ol>
                 </div>
