@@ -2,7 +2,7 @@ import React from 'react'
 import Shelf from './Shelf.js'
 import * as BooksAPI from './BooksAPI'
 import {Link} from 'react-router-dom'
-// import BooksApp from './App.js';
+
 
 class Main extends React.Component {
     constructor(props) {
@@ -11,31 +11,20 @@ class Main extends React.Component {
             books : [] 
         }
         this.handleShelf = this.handleShelf.bind(this)
+        
     }
     
     
     componentDidMount() {
         BooksAPI.getAll().then((res)=> this.setState({books : res}))
+        
     }
-    // handleShelf(book, shelf) {
-        
-    //     BooksAPI.update(book, shelf)
-    //     .then(()=> {
-    //         book.shelf = shelf 
-    //         this.setState(currentState => ({
-    //             books : currentState.books.filter(item => item.id !== book.id).concat(book)
-    //         }))
-            
-    //     })
-        
-    // }
     handleShelf = (book, shelf) => {
         BooksAPI.update(book, shelf)
     
         BooksAPI.getAll().then((books) => {
         this.setState({ books: books })
-        }
-        )
+        })
     }
     
     render() {
@@ -55,7 +44,11 @@ class Main extends React.Component {
                     <Shelf value = 'Read' books={Read} ShelfChange={this.handleShelf}/>
                 </div>
                 <div className="open-search">
-                    <Link to={'/search'}>
+                    <Link to={{
+                        pathname:'/search',
+                        state: {allBooks: true}
+                        
+                    }} >
                         <button>Add a Book</button>
                     </Link>
                 </div>

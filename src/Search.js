@@ -2,17 +2,22 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {search} from './BooksAPI.js'
 import Book from './book.js'
-
+import * as BooksAPI from './BooksAPI'
 class Search extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             query : '',
-            books : []
+            books : [],
+            shelfBooks : []
         }
     }
         
     
+    componentDidMount() {
+        BooksAPI.getAll().then((books) => this.setState({shelfBooks : books}))
+    }
+
     handleChange = async e => {
         try {
             const query = e.target.value
@@ -22,7 +27,18 @@ class Search extends React.Component {
                 if(results.error) {
                     this.setState({books:[]})
                 } else {
+                        results.map(book => {
+                            this.state.shelfBooks.map(b => {
+                                if (b.id === book.id) {
+                                    book.shelf = b.shelf
+                                }
+                                return b
+                            })
+                        return book
+                    })
                     this.setState({books:results})
+                    
+
                 } 
             } else {
                 this.setState({books:[]})
@@ -32,8 +48,10 @@ class Search extends React.Component {
         catch(error) {
         }
     }
+    handleShelf = (book, shelf) => {
+        BooksAPI.update(book, shelf)
+    }   
     
-        
     
     render() {
         return (
@@ -50,7 +68,7 @@ class Search extends React.Component {
                 <div className="search-books-results">
                     <ol className="books-grid">
                         {this.state.books.map(book =>  (
-                            <Book {...book} key={book.id} all={this.props.book} />
+                            <Book {...book} key={book.id} all={this.props.book} handleShelf={this.handleShelf}/>
                         ))}
                     </ol>
                 </div>
